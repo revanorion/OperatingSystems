@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="queue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="queue.h" />
