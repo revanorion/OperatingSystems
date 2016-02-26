@@ -6,16 +6,15 @@ void queue::Enqueue(int x)
 	{
 		shared_ptr<qnode> newNode = make_shared<qnode>();
 		newNode->priority = x;
-		front = back = newNode;
-		front->next = back;
+		front = newNode;
+
 	}
-	//else if(front==back)
-	//{
-	//	shared_ptr<qnode> newNode = make_shared<qnode>();
-	//	newNode->priority = x;
-	//	back = newNode;
-	//	front->next = back;
-	//}
+	else if (back == 0) {
+		shared_ptr<qnode> newNode = make_shared<qnode>();
+		newNode->priority = x;
+		front->next = back;
+		back = newNode;
+	}
 	else
 	{
 		shared_ptr<qnode> newNode = make_shared<qnode>();
@@ -30,7 +29,12 @@ void queue::Enqueue(shared_ptr<qnode>& node)
 {
 	if (front == 0)
 	{
-		front = back =node;
+		front = node;
+
+	}
+	else if (back == 0)
+	{
+		back = node;
 		front->next = back;
 	}
 	else
@@ -43,7 +47,7 @@ void queue::Enqueue(shared_ptr<qnode>& node)
 shared_ptr<qnode>& queue::Dequeue()
 {
 	shared_ptr<qnode> newNode = front;
-	front = front->next;  
+	front = front->next;
 	newNode->next = 0;
 	return newNode;
 }
@@ -91,8 +95,16 @@ bool queue::empty()
 		return false;
 }
 
-ostream & operator<<(ostream & out, const queue & Org)
+ostream & operator<<(ostream & out, shared_ptr<queue> & Org)
 {
-	// TODO: insert return statement here
+	shared_ptr<qnode> newNode = Org->get_front();
+	if (newNode == 0)
+		out << "\t\t[empty]\n";
+	else
+		while (newNode != 0)
+		{
+			out<<"\t\t" << newNode->name << "\t\t" << newNode->IO_time.back() << endl;
+			newNode = newNode->next;
+		}
 	return out;
 }
