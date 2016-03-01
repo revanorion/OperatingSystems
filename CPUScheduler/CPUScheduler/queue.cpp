@@ -46,6 +46,11 @@ void queue::Enqueue(shared_ptr<qnode>& node)
 
 shared_ptr<qnode>& queue::Dequeue()
 {
+	if (front == back)
+	{
+		front = back = 0;
+		return front;
+	}
 	shared_ptr<qnode> newNode = front;
 	front = front->next;
 	newNode->next = 0;

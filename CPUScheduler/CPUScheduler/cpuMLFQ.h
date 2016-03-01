@@ -20,6 +20,7 @@ private:
 	void CPU_time_quantom_14();
 	void CPU_time_quantom_7();
 	void CPU_fcfs();
+	void CPU_prempt();
 	void do_IO();
 	void do_CPU();
 	void init();
