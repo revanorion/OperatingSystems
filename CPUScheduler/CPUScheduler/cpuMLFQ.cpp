@@ -8,11 +8,19 @@ void MLFQ::start()
 		thread doio(&MLFQ::do_IO, this);
 		doio.join();
 		docpu.join();*/
+		do_CPU();
 		if (!IO->empty())
 			do_IO();
-		do_CPU();
-		
-		
+		if (CPUnode != 0 && CPUnode->CPU_burst.back() <= 0)
+		{
+			CPUnode->CPU_burst.pop_back();
+			CPUnode->time_on = 0;
+			CPUnode->qu = "";
+			IO->Enqueue(CPUnode);
+			CPUnode = 0;
+		}
+
+
 	} while (!queue1->empty() || !queue2->empty() || !fcfs->empty() || !IO->empty());
 
 }
@@ -57,7 +65,7 @@ void MLFQ::init()
 	P7->name = "P7";
 	P8->name = "P8";
 	P9->name = "P9";
-	
+
 	queue1->Enqueue(P1);
 	queue1->Enqueue(P2);
 	queue1->Enqueue(P3);
@@ -76,7 +84,7 @@ void MLFQ::print()
 	shared_ptr<qnode> newNode = queue1->get_front();
 	while (newNode != 0)
 	{
-		cout << "\t\t" << newNode->name << "\t\t" << newNode->CPU_burst.back()<< "\t\t" <<newNode->qu << endl;
+		cout << "\t\t" << newNode->name << "\t\t" << newNode->CPU_burst.back() << "\t\t" << newNode->qu << endl;
 		newNode = newNode->next;
 	}
 	newNode = queue2->get_front();
@@ -91,67 +99,52 @@ void MLFQ::print()
 		cout << "\t\t" << newNode->name << "\t\t" << newNode->CPU_burst.back() << "\t\t" << newNode->qu << endl;
 		newNode = newNode->next;
 	}
-	cout << ".................................................." << endl<<endl;
-	cout << "Now in IO:\tProcess\t\tRemaining I/O time\n" << IO << endl;
+	cout << ".................................................." << endl << endl;
+	cout << "Now in IO:\tProcess\t\tRemaining I/O time\n" << IO;
+	cout << endl;
 }
 
 void MLFQ::CPU_time_quantom_7()
 {
-	shared_ptr<qnode> node = queue1->get_front();
-	if (node->time_on == 0)
-	{
-	cout << "Current time: " << counter << "\nCurrently Running: " << node->name << endl;
-	print();
-	}
-	node->CPU_burst.back()--;
-	node->time_on++;
-	if (node->CPU_burst.back() == 0)
-	{
-		node->CPU_burst.pop_back();
-		node->time_on = 0;
-		node->qu = "";
+	if (CPUnode == 0) {
+		CPUnode = queue1->get_front();
 		queue1->Dequeue();
-		IO->Enqueue(node);
+		cout << "Current time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
+		print();
 	}
-	else if (node->time_on == 7)
+	CPUnode->CPU_burst.back()--;
+	CPUnode->time_on++;
+	if (CPUnode->time_on == 7)
 	{
-		node->priority++;
-		node->qu = "Q2";
-		queue1->Dequeue();
-		queue2->Enqueue(node);
-		node->time_on = 0;
+		CPUnode->priority++;
+		CPUnode->qu = "Q2";
+		queue2->Enqueue(CPUnode);
+		CPUnode->time_on = 0;
+		CPUnode = 0;
 	}
 
 }
 
 void MLFQ::CPU_fcfs()
 {
-	shared_ptr<qnode> node = fcfs->get_front();
-	if (node->time_on == 0)
-	{
-		cout << "Current time: " << counter << "\nCurrently Running: " << node->name << endl;
+	if (CPUnode == 0) {
+		CPUnode = fcfs->get_front();
+		fcfs->Dequeue();
+		cout << "Current time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
 		print();
 	}
-	node->CPU_burst.back()--;
-	node->time_on++;
-	if (node->CPU_burst.back() == 0)
-	{
-		node->CPU_burst.pop_back();
-		node->time_on = 0;
-		node->qu = "";
-		fcfs->Dequeue();
-		IO->Enqueue(node);
-	}
+	CPUnode->CPU_burst.back()--;
+	CPUnode->time_on++;
 }
 
 void MLFQ::do_IO()
 {
 	shared_ptr<qnode> nodeParent = 0;
 	shared_ptr<qnode> node = IO->get_front();
-	
+
 	while (node != 0)
 	{
-		
+
 		node->IO_time.back()--;
 		if (node->IO_time.back() == 0)
 		{
@@ -201,22 +194,21 @@ void MLFQ::do_CPU()
 
 void MLFQ::CPU_time_quantom_14()
 {
-	shared_ptr<qnode> node = queue2->get_front();
-	node->CPU_burst.back()--;
-	node->time_on++;
-	if (node->CPU_burst.back() == 0)
+	if (CPUnode == 0)
 	{
-		node->CPU_burst.pop_back();
-		node->time_on = 0;
+		CPUnode = queue2->get_front();
 		queue2->Dequeue();
-		IO->Enqueue(node);
+		cout << "Current time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
+		print();
 	}
-	else if (node->time_on > 14)
+	CPUnode->CPU_burst.back()--;
+	CPUnode->time_on++;
+	if (CPUnode->time_on > 14)
 	{
-		node->priority++;
-		queue2->Dequeue();
-		fcfs->Enqueue(node);
-		node->time_on = 0;
+		CPUnode->priority++;
+		fcfs->Enqueue(CPUnode);
+		CPUnode->time_on = 0;
+		CPUnode = 0;
 	}
 
 }
