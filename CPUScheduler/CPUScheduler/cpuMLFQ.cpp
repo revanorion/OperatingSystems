@@ -123,7 +123,6 @@ void MLFQ::CPU_time_quantom_7()
 		CPUnode->time_on = 0;
 		CPUnode = 0;
 	}
-
 }
 
 void MLFQ::CPU_fcfs()
@@ -142,7 +141,16 @@ void MLFQ::CPU_fcfs()
 void MLFQ::CPU_prempt()
 {
 	if (CPUnode != 0) {
-		if (CPUnode->qu == "Q1")
+		if (CPUnode->CPU_burst.back() <= 0)
+		{
+			CPUnode->CPU_burst.pop_back();
+			CPUnode->time_on = 0;
+			CPUnode->qu = "";
+			IO->Enqueue(CPUnode);
+			CPUnode = 0;
+		}
+
+		else if (CPUnode->qu == "Q1")
 		{
 			CPUnode->time_on = 0;
 			queue1->Enqueue(CPUnode);
@@ -168,27 +176,25 @@ void MLFQ::do_IO()
 	shared_ptr<qnode> nodeNext;
 	while (node != 0)
 	{
-		if (node->name == "P8" && node->IO_time.back()==41)
-			cout << endl;
 		node->IO_time.back()--;
 		if (node->IO_time.back() == 0)
 		{
+			nodeNext = node->next;
 			IO->remove_node(node);
+			node->next = 0;
 			switch (node->priority)
 			{
 			case 1:
 				node->qu = "Q1";
-				nodeNext = node->next;
+				
 				queue1->Enqueue(node);
 				break;
 			case 2:
 				node->qu = "Q2";
-				nodeNext = node->next;
 				queue2->Enqueue(node);
 				break;
 			case 3:
 				node->qu = "FCFS";
-				nodeNext = node->next;
 				fcfs->Enqueue(node);
 				break;
 			default:
@@ -224,6 +230,7 @@ void MLFQ::do_CPU()
 
 void MLFQ::CPU_time_quantom_14()
 {
+
 	if (CPUnode == 0 || CPUnode->qu != "Q2")
 	{
 		CPU_prempt();
@@ -232,11 +239,14 @@ void MLFQ::CPU_time_quantom_14()
 		cout << "Current time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
 		print();
 	}
+	if (CPUnode->name == "P8")
+		cout << endl;
 	CPUnode->CPU_burst.back()--;
 	CPUnode->time_on++;
-	if (CPUnode->time_on > 14)
+	if (CPUnode->time_on == 14)
 	{
 		CPUnode->priority++;
+		CPUnode->qu = "FCFS";
 		fcfs->Enqueue(CPUnode);
 		CPUnode->time_on = 0;
 		CPUnode = 0;
