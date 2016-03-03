@@ -24,12 +24,24 @@
     <ClCompile Include="cpuMLFQ.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="list.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cpuML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="queue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cpuMLFQ.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cpuML.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

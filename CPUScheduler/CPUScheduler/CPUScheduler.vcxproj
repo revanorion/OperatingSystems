@@ -146,12 +146,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cpuML.cpp" />
     <ClCompile Include="cpuMLFQ.cpp" />
+    <ClCompile Include="list.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="queue.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cpuML.h" />
     <ClInclude Include="cpuMLFQ.h" />
+    <ClInclude Include="list.h" />
     <ClInclude Include="queue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

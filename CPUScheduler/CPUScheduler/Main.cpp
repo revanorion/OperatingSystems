@@ -1,12 +1,13 @@
 #include "cpuMLFQ.h"
-
+#include "cpuML.h"
 
 
 
 int main() {
 
-	MLFQ a;
+	ML a;
 	a.start();
+	
 
 
 
