@@ -60,8 +60,10 @@ shared_ptr<listnode> list::remove_front()
 
 void list::remove_node(shared_ptr<listnode>&x)
 {
+
 	if (x == front)
 	{
+	if (front->next != 0)
 		front->next->prev = 0;
 		front = front->next;
 		x->next = 0;
@@ -87,7 +89,8 @@ ostream & operator<<(ostream & out, shared_ptr<list> & Org)
 	else
 		while (newNode != 0)
 		{
-			out << "\t\t" << newNode->name << "\t\t" << newNode->IO_time.back() << endl;
+			if(!newNode->IO_time.empty())
+				out << "\t\t" << newNode->name << "\t\t" << newNode->IO_time.back() << endl;
 			newNode = newNode->next;
 		}
 	return out;

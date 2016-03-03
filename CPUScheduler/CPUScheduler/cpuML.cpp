@@ -88,6 +88,8 @@ void ML::init()
 
 void ML::print()
 {
+	if (counter == 456)
+		cout << endl;
 	cout << ".................................................." << endl << endl;
 	cout << "Ready Queue:\tProcess\t\tBurst\t\tQueue" << endl;
 	shared_ptr<listnode> newNode = queue->get_front();
@@ -173,8 +175,9 @@ void ML::do_IO()
 	shared_ptr<listnode> nodeNext;
 	while (node != 0)
 	{
-		node->IO_time.back()--;
-		if (node->IO_time.back() == 0)
+		if(!node->IO_time.empty())
+			node->IO_time.back()--;
+		if (node->IO_time.empty() || node->IO_time.back() == 0)
 		{
 			nodeNext = node->next;
 			IO->remove_node(node);
@@ -197,8 +200,8 @@ void ML::do_IO()
 				cout << "error\n";
 				break;
 			}
-			cout << "Inseted " << node->name << " in queue\t" << node->qu << endl;
-			node->IO_time.pop_back();
+			if (!node->IO_time.empty())
+				node->IO_time.pop_back();
 			node = nodeNext;
 		}
 		else
