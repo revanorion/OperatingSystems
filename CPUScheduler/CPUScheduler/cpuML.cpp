@@ -4,10 +4,6 @@ void ML::start()
 {
 	init();
 	do {
-		/*thread docpu(&MLFQ::do_CPU, this);
-		thread doio(&MLFQ::do_IO, this);
-		doio.join();
-		docpu.join();*/
 		do_CPU();
 		if (!IO->empty())
 			do_IO();
@@ -24,7 +20,7 @@ void ML::start()
 		}
 
 
-	} while (!queue->empty() || !queue->empty() || !queue->empty() || !IO->empty());
+	} while (!queue->empty() ||  !IO->empty());
 
 }
 
@@ -88,8 +84,6 @@ void ML::init()
 
 void ML::print()
 {
-	if (counter == 456)
-		cout << endl;
 	cout << ".................................................." << endl << endl;
 	cout << "Ready Queue:\tProcess\t\tBurst\t\tQueue" << endl;
 	shared_ptr<listnode> newNode = queue->get_front();

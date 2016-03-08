@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClCompile Include="cpuML.cpp" />
     <ClCompile Include="cpuMLFQ.cpp" />
+    <ClCompile Include="cpuSJF.cpp" />
     <ClCompile Include="list.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="queue.cpp" />
@@ -155,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="cpuML.h" />
     <ClInclude Include="cpuMLFQ.h" />
+    <ClInclude Include="cpuSJF.h" />
     <ClInclude Include="list.h" />
     <ClInclude Include="queue.h" />
   </ItemGroup>
