@@ -39,6 +39,45 @@ void list::insert(shared_ptr<listnode>& x)
 	}
 }
 
+void list::insertInorder(shared_ptr<listnode>& x)
+{
+	if (front == 0)
+	{
+		front = x;
+	}
+	else if (front->CPU_burst.back() > x->CPU_burst.back())
+	{
+		x->next = front;
+		front->prev = x;
+		front = x;
+	}
+	else
+	{
+		shared_ptr<listnode> n = front;
+		bool insertd = false;
+		while (n != 0 && !insertd)
+		{
+			if (n->CPU_burst.back() > x->CPU_burst.back())
+			{
+				x->next = n;
+				x->prev = n->prev;
+				n->prev->next = x;
+				n->prev = x;
+				insertd = true;
+			}
+			else if (n->next == 0)
+			{
+				x->prev = n;
+				n->next = x;
+				insertd = true;
+			}
+			else
+				n = n->next;
+		}
+
+	}
+}
+
 shared_ptr<listnode> list::remove_front()
 {
 	shared_ptr<listnode> x = front;

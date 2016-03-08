@@ -230,7 +230,7 @@ void ML::CPU_time_quantom_14()
 		CPU_prempt();
 		CPUnode = queue->get_front();
 		queue->remove_front();
-		cout << "Current time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
+		cout << "\nCurrent time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
 		print();
 	}
 	CPUnode->CPU_burst.back()--;

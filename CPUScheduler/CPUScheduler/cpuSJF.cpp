@@ -13,8 +13,7 @@ void SJF::start()
 			if (!CPUnode->CPU_burst.empty())
 			{
 				CPUnode->time_on = 0;
-				CPUnode->qu = "";
-				IO->insert(CPUnode);
+				IO->insertInorder(CPUnode);
 			}
 			CPUnode = 0;
 		}
@@ -29,7 +28,7 @@ void SJF::CPU_SJF()
 	if (CPUnode == 0) {
 		CPUnode = queue->get_front();
 		queue->remove_front();
-		cout << "Current time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
+		cout << "\nCurrent time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
 		print();
 	}
 	CPUnode->CPU_burst.back()--;
@@ -49,8 +48,7 @@ void SJF::do_IO()
 			nodeNext = node->next;
 			IO->remove_node(node);
 			node->next = 0;
-			node->qu = "SJF";
-			queue->insert(node);
+			queue->insertInorder(node);
 			if (!node->IO_time.empty())
 				node->IO_time.pop_back();
 			node = nodeNext;
@@ -113,25 +111,25 @@ void SJF::init()
 	P8->name = "P8";
 	P9->name = "P9";
 
-	queue->insert(P1);
-	queue->insert(P2);
-	queue->insert(P3);
-	queue->insert(P4);
-	queue->insert(P5);
-	queue->insert(P6);
-	queue->insert(P7);
-	queue->insert(P8);
-	queue->insert(P9);
+	queue->insertInorder(P1);
+	queue->insertInorder(P2);
+	queue->insertInorder(P3);
+	queue->insertInorder(P4);
+	queue->insertInorder(P5);
+	queue->insertInorder(P6);
+	queue->insertInorder(P7);
+	queue->insertInorder(P8);
+	queue->insertInorder(P9);
 }
 
 void SJF::print()
 {
 	cout << ".................................................." << endl << endl;
-	cout << "Ready Queue:\tProcess\t\tBurst\t\tQueue" << endl;
+	cout << "Ready Queue:\tProcess\t\tBurst" << endl;
 	shared_ptr<listnode> newNode = queue->get_front();
 	while (newNode != 0)
 	{
-		cout << "\t\t" << newNode->name << "\t\t" << newNode->CPU_burst.back() << "\t\t" << newNode->qu << endl;
+		cout << "\t\t" << newNode->name << "\t\t" << newNode->CPU_burst.back() <<  endl;
 		newNode = newNode->next;
 	}
 	cout << ".................................................." << endl << endl;

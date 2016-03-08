@@ -12,7 +12,7 @@ class listnode
 public:
 	listnode() :next(0), prev(0), priority(1), CPU_burst(0), IO_time(0), time_on(0), name(""), qu("Q1") {};
 	listnode(short unsigned p, vector<int>cpuB, vector<int>IOt, string s, string q) :next(0), prev(0), priority(p), CPU_burst(cpuB), IO_time(IOt), time_on(0), name(s), qu(q) {};
-	~listnode() { cout << "Deleted\n"; };
+	~listnode() { cout << "\nProcess "<<name<<" Deleted\n"; };
 	vector<int> CPU_burst;
 	vector<int> IO_time;
 	short unsigned priority;
@@ -29,6 +29,7 @@ public:
 	~list() { };
 	list(const list &) {};
 	void insert(shared_ptr<listnode>&);
+	void insertInorder(shared_ptr<listnode>&);
 	shared_ptr<listnode> remove_front();
 	void remove_node(shared_ptr<listnode>&);
 	//void Print();
