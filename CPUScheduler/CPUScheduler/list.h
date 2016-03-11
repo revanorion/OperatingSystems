@@ -10,16 +10,20 @@ using namespace std;
 class listnode
 {
 public:
-	listnode() :next(0), prev(0), priority(1), CPU_burst(0), IO_time(0), time_on(0), name(""), qu("Q1") {};
+	listnode() :next(0), prev(0), priority(1), CPU_burst(0), IO_time(0), time_on(0), name(""),first_response(true), qu("Q1") {};
 	listnode(short unsigned p, vector<int>cpuB, vector<int>IOt, string s, string q) :next(0), prev(0), priority(p), CPU_burst(cpuB), IO_time(IOt), time_on(0), name(s), qu(q) {};
 	~listnode() { cout << "\nProcess "<<name<<" Deleted\n"; };
 	vector<int> CPU_burst;
+	vector<int> waiting_time;
+	vector<int> turnaround_time;
+	vector<int> response_time;
 	vector<int> IO_time;
 	short unsigned priority;
 	short unsigned time_on;
 	shared_ptr<listnode> next;
 	shared_ptr<listnode> prev;
 	string name, qu;
+	bool first_response;
 };
 
 class list

@@ -19,8 +19,9 @@ void SJF::start()
 		}
 
 
-	} while (!queue->empty() || !IO->empty());
-
+	} while (!queue->empty() || !IO->empty() || CPUnode != 0);
+	utilization = ((double)(counter - idle) / counter) * 100;
+	cout << "CPU Utilization: " << utilization << endl;
 }
 
 void SJF::CPU_SJF()
@@ -66,6 +67,7 @@ void SJF::do_CPU()
 	}
 	else {
 		cout << "CPU IDLE";
+		idle++;
 	}
 	counter++;
 }

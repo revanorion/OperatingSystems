@@ -5,7 +5,7 @@
 class ML
 {
 public:
-	ML() :CPUnode(0), counter(0) { queue = make_shared<list>();};
+	ML() :CPUnode(0), counter(0), idle(0), utilization(0) { queue = make_shared<list>();};
 	~ML() {	};
 	void start();
 
@@ -15,6 +15,7 @@ private:
 	shared_ptr<listnode>CPUnode;
 	//should be a list instead
 	shared_ptr<list> IO = make_shared<list>();
+	shared_ptr<list> finished= make_shared<list>();
 	void CPU_time_quantom_14();
 	void CPU_time_quantom_7();
 	void CPU_fcfs();
@@ -23,7 +24,10 @@ private:
 	void do_CPU();
 	void init();
 	void print();
+	void waiting_time();
 	int counter;
+	int idle;
+	double utilization;
 };
 
 

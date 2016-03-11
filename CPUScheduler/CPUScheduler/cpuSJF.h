@@ -5,7 +5,7 @@
 class SJF
 {
 public:
-	SJF() :CPUnode(0), counter(0) { queue = make_shared<list>(); };
+	SJF() :CPUnode(0), counter(0), idle(0), utilization(0) { queue = make_shared<list>(); };
 	~SJF() {	};
 	void start();
 
@@ -21,6 +21,8 @@ private:
 	void init();
 	void print();
 	int counter;
+	int idle;
+	double utilization;
 };
 
 

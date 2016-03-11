@@ -16,12 +16,16 @@ void ML::start()
 				CPUnode->qu = "";
 				IO->insert(CPUnode);
 			}
+			else
+				finished->insert(CPUnode);
 			CPUnode = 0;
 		}
 
 
-	} while (!queue->empty() ||  !IO->empty());
-
+	} while (!queue->empty() ||  !IO->empty() || CPUnode!=0);
+	utilization = ((double)(counter - idle) / counter)*100;
+	cout << "CPU Utilization: " << utilization << endl;
+	
 }
 
 void ML::init()
@@ -74,12 +78,19 @@ void ML::init()
 	queue->insert(P7);
 	queue->insert(P8);
 	queue->insert(P9);
-	shared_ptr<listnode> newNode = queue->get_front();
-	while (newNode != 0)
+
+	shared_ptr<listnode> node = queue->get_front();
+	while (node != 0)
 	{
-		cout << "\t\t" << newNode->name << "\t\t" << newNode->CPU_burst.back() << "\t\t" << newNode->qu << endl;
-		newNode = newNode->next;
+		for (int x = 0; x < node->CPU_burst.size(); x++)
+		{
+			node->response_time.push_back(0);
+			node->waiting_time.push_back(0);
+			node->turnaround_time.push_back(0);
+		}
+		node = node->next;
 	}
+
 }
 
 void ML::print()
@@ -97,17 +108,33 @@ void ML::print()
 	cout << endl;
 }
 
+void ML::waiting_time()
+{
+	shared_ptr<listnode> node = queue->get_front();
+	while (node != 0)
+	{
+		node->turnaround_time[node->CPU_burst.size()-1]++;
+		node->waiting_time[node->CPU_burst.size()-1]++;
+		if(node->first_response)
+			node->response_time[node->CPU_burst.size()-1]++;
+		node = node->next;
+	}
+}
+
 void ML::CPU_time_quantom_7()
 {
 	if (CPUnode == 0 || CPUnode->qu != "Q1") {
 		CPU_prempt();
 		//CPUnode = queue->get_front();
 		CPUnode=queue->remove_front();
+		if (CPUnode->first_response)
+			CPUnode->first_response = false;
 		cout << "Current time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
 		print();
 	}
 	CPUnode->CPU_burst.back()--;
 	CPUnode->time_on++;
+	CPUnode->turnaround_time[CPUnode->CPU_burst.size()-1]++;
 	if (CPUnode->CPU_burst.back()!=0 && CPUnode->time_on == 7)
 	{
 		CPUnode->priority++;
@@ -123,12 +150,15 @@ void ML::CPU_fcfs()
 	if (CPUnode == 0 || CPUnode->qu != "Q3") {
 		CPU_prempt();
 		CPUnode = queue->get_front();
+		if (CPUnode->first_response)
+			CPUnode->first_response = false;
 		queue->remove_front();
 		cout << "Current time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
 		print();
 	}
 	CPUnode->CPU_burst.back()--;
 	CPUnode->time_on++;
+	CPUnode->turnaround_time[CPUnode->CPU_burst.size()-1]++;
 }
 
 void ML::CPU_prempt()
@@ -176,6 +206,7 @@ void ML::do_IO()
 			nodeNext = node->next;
 			IO->remove_node(node);
 			node->next = 0;
+			node->first_response = true;
 			switch (node->priority)
 			{
 			case 1:
@@ -218,8 +249,12 @@ void ML::do_CPU()
 		CPU_fcfs();
 	}
 	else
+	{
 		cout << "CPU Idle";
+		idle++;
+	}
 	counter++;
+	waiting_time();
 }
 
 void ML::CPU_time_quantom_14()
@@ -230,11 +265,14 @@ void ML::CPU_time_quantom_14()
 		CPU_prempt();
 		CPUnode = queue->get_front();
 		queue->remove_front();
+		if (CPUnode->first_response)
+			CPUnode->first_response = false;
 		cout << "\nCurrent time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
 		print();
 	}
 	CPUnode->CPU_burst.back()--;
 	CPUnode->time_on++;
+	CPUnode->turnaround_time[CPUnode->CPU_burst.size()-1]++;
 	if (CPUnode->CPU_burst.back() != 0 && CPUnode->time_on == 14)
 	{
 		CPUnode->priority++;
