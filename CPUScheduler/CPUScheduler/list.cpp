@@ -1,5 +1,5 @@
 #include "list.h"
-
+//insert processes nodes in the order of queue priority
 void list::insert(shared_ptr<listnode>& x)
 {
 	if (front == 0)
@@ -39,6 +39,7 @@ void list::insert(shared_ptr<listnode>& x)
 	}
 }
 
+//insert inorder based on shortest cpu burst
 void list::insertInorder(shared_ptr<listnode>& x)
 {
 	if (front == 0)
@@ -78,6 +79,7 @@ void list::insertInorder(shared_ptr<listnode>& x)
 	}
 }
 
+//remove the front process from list and return it
 shared_ptr<listnode> list::remove_front()
 {
 	shared_ptr<listnode> x = front;
@@ -97,6 +99,7 @@ shared_ptr<listnode> list::remove_front()
 
 }
 
+//remove any process x from the list
 void list::remove_node(shared_ptr<listnode>&x)
 {
 
@@ -120,6 +123,7 @@ bool list::empty()
 	return (front == 0) ? true : false;
 }
 
+//print list
 ostream & operator<<(ostream & out, shared_ptr<list> & Org)
 {
 	shared_ptr<listnode> newNode = Org->get_front();

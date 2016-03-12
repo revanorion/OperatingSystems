@@ -1,10 +1,13 @@
 #include "cpuML.h"
-
+//do the init, while something to do, do the cpu, do the io, place completed nodes in io
+//calculate utilazation
 void ML::start()
 {
 	init();
+
 	do {
 		do_CPU();
+
 		if (!IO->empty())
 			do_IO();
 		if (CPUnode != 0 && CPUnode->CPU_burst.back() <= 0)
@@ -22,12 +25,13 @@ void ML::start()
 		}
 
 
-	} while (!queue->empty() ||  !IO->empty() || CPUnode!=0);
-	utilization = ((double)(counter - idle) / counter)*100;
+	} while (!queue->empty() || !IO->empty() || CPUnode != 0);
+	utilization = ((double)(counter - idle) / counter) * 100;
 	cout << "CPU Utilization: " << utilization << endl;
-	
+
 }
 
+//make each process and insert them into the queue
 void ML::init()
 {
 	shared_ptr<listnode> P1 = make_shared<listnode>(); //{ 18, 41, 16, 52, 19, 31, 14, 33, 17, 43, 19, 66, 14, 39, 17 }
@@ -93,6 +97,7 @@ void ML::init()
 
 }
 
+//print relevant data
 void ML::print()
 {
 	cout << ".................................................." << endl << endl;
@@ -108,25 +113,30 @@ void ML::print()
 	cout << endl;
 }
 
+//increase turnaround time, response time, and waiting time
 void ML::waiting_time()
 {
 	shared_ptr<listnode> node = queue->get_front();
 	while (node != 0)
 	{
-		node->turnaround_time[node->CPU_burst.size()-1]++;
-		node->waiting_time[node->CPU_burst.size()-1]++;
-		if(node->first_response)
-			node->response_time[node->CPU_burst.size()-1]++;
+		node->turnaround_time[node->CPU_burst.size() - 1]++;
+		node->waiting_time[node->CPU_burst.size() - 1]++;
+		if (node->first_response)
+			node->response_time[node->CPU_burst.size() - 1]++;
 		node = node->next;
 	}
+	if (CPUnode != 0)
+		CPUnode->turnaround_time[CPUnode->CPU_burst.size() - 1]++;
 }
 
+//take the node in front of the ready queue if no node on cpu. prempt any cpu node of lower queue
+//increase a cpu processes priority if goes above the time quantom
+//calculate the waiting time
 void ML::CPU_time_quantom_7()
 {
 	if (CPUnode == 0 || CPUnode->qu != "Q1") {
 		CPU_prempt();
-		//CPUnode = queue->get_front();
-		CPUnode=queue->remove_front();
+		CPUnode = queue->remove_front();
 		if (CPUnode->first_response)
 			CPUnode->first_response = false;
 		cout << "Current time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
@@ -134,8 +144,8 @@ void ML::CPU_time_quantom_7()
 	}
 	CPUnode->CPU_burst.back()--;
 	CPUnode->time_on++;
-	CPUnode->turnaround_time[CPUnode->CPU_burst.size()-1]++;
-	if (CPUnode->CPU_burst.back()!=0 && CPUnode->time_on == 7)
+	waiting_time();
+	if (CPUnode->CPU_burst.back() != 0 && CPUnode->time_on == 7)
 	{
 		CPUnode->priority++;
 		CPUnode->qu = "Q2";
@@ -145,6 +155,8 @@ void ML::CPU_time_quantom_7()
 	}
 }
 
+//take the node in front of the ready queue if no node on cpu.
+//calculate the waiting time
 void ML::CPU_fcfs()
 {
 	if (CPUnode == 0 || CPUnode->qu != "Q3") {
@@ -158,9 +170,10 @@ void ML::CPU_fcfs()
 	}
 	CPUnode->CPU_burst.back()--;
 	CPUnode->time_on++;
-	CPUnode->turnaround_time[CPUnode->CPU_burst.size()-1]++;
+	waiting_time();
 }
 
+//prempt a node from the cpu and return it to the ready queue.
 void ML::CPU_prempt()
 {
 	if (CPUnode != 0) {
@@ -193,13 +206,14 @@ void ML::CPU_prempt()
 	}
 }
 
+//decrease time on each node in the io list. insert nodes that complete into ready queue
 void ML::do_IO()
 {
 	shared_ptr<listnode> node = IO->get_front();
 	shared_ptr<listnode> nodeNext;
 	while (node != 0)
 	{
-		if(!node->IO_time.empty())
+		if (!node->IO_time.empty())
 			node->IO_time.back()--;
 		if (node->IO_time.empty() || node->IO_time.back() == 0)
 		{
@@ -234,17 +248,21 @@ void ML::do_IO()
 	}
 }
 
+//do the cpu if the queue or cpu node is not empty. add idle time if not
+//do the respective time quantom for Q1,Q2,Q3
+//calculate times
 void ML::do_CPU()
 {
-	if ((!queue->empty() && queue->get_front()->qu == "Q1")||(CPUnode != 0 && CPUnode->qu == "Q1"))
+
+	if ((!queue->empty() && queue->get_front()->qu == "Q1") || (CPUnode != 0 && CPUnode->qu == "Q1"))
 	{
 		CPU_time_quantom_7();
 	}
-	else if ((!queue->empty() && queue->get_front()->qu == "Q2")||(CPUnode != 0 && CPUnode->qu == "Q2"))
+	else if ((!queue->empty() && queue->get_front()->qu == "Q2") || (CPUnode != 0 && CPUnode->qu == "Q2"))
 	{
 		CPU_time_quantom_14();
 	}
-	else if ((!queue->empty() && queue->get_front()->qu == "Q3")||(CPUnode != 0 && CPUnode->qu == "Q3"))
+	else if ((!queue->empty() && queue->get_front()->qu == "Q3") || (CPUnode != 0 && CPUnode->qu == "Q3"))
 	{
 		CPU_fcfs();
 	}
@@ -252,11 +270,14 @@ void ML::do_CPU()
 	{
 		cout << "CPU Idle";
 		idle++;
+		waiting_time();
 	}
 	counter++;
-	waiting_time();
 }
 
+//take the node in front of the ready queue if no node on cpu. prempt any cpu node of lower queue
+//increase a cpu processes priority if goes above the time quantom
+//calculate the waiting time
 void ML::CPU_time_quantom_14()
 {
 
@@ -272,7 +293,7 @@ void ML::CPU_time_quantom_14()
 	}
 	CPUnode->CPU_burst.back()--;
 	CPUnode->time_on++;
-	CPUnode->turnaround_time[CPUnode->CPU_burst.size()-1]++;
+	waiting_time();
 	if (CPUnode->CPU_burst.back() != 0 && CPUnode->time_on == 14)
 	{
 		CPUnode->priority++;

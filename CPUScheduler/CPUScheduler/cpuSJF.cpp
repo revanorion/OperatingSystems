@@ -1,5 +1,6 @@
 #include "cpuSJF.h"
-
+//do the init, while something to do, do the cpu, do the io, place completed nodes in io
+//calculate utilazation
 void SJF::start()
 {
 	init();
@@ -24,6 +25,7 @@ void SJF::start()
 	cout << "CPU Utilization: " << utilization << endl;
 }
 
+//take the node in front of the ready queue if no node on cpu
 void SJF::CPU_SJF()
 {
 	if (CPUnode == 0) {
@@ -36,6 +38,7 @@ void SJF::CPU_SJF()
 	CPUnode->time_on++;
 }
 
+//decrease time on each node in the io list. insert nodes that complete into ready queue
 void SJF::do_IO()
 {
 	shared_ptr<listnode> node = IO->get_front();
@@ -59,9 +62,11 @@ void SJF::do_IO()
 	}
 }
 
+//do the cpu if the queue or cpu node is not empty. add idle time if not
+//calculate times
 void SJF::do_CPU()
 {
-	if (!queue->empty())
+	if (!queue->empty() || CPUnode != 0)
 	{
 		CPU_SJF();
 	}
@@ -70,8 +75,10 @@ void SJF::do_CPU()
 		idle++;
 	}
 	counter++;
+	waiting_time();
 }
 
+//make each process and insert them into the queue
 void SJF::init()
 {
 	shared_ptr<listnode> P1 = make_shared<listnode>(); //{ 18, 41, 16, 52, 19, 31, 14, 33, 17, 43, 19, 66, 14, 39, 17 }
@@ -122,8 +129,22 @@ void SJF::init()
 	queue->insertInorder(P7);
 	queue->insertInorder(P8);
 	queue->insertInorder(P9);
+
+	shared_ptr<listnode> node = queue->get_front();
+	while (node != 0)
+	{
+		for (int x = 0; x < node->CPU_burst.size(); x++)
+		{
+			node->response_time.push_back(0);
+			node->waiting_time.push_back(0);
+			node->turnaround_time.push_back(0);
+		}
+		node = node->next;
+	}
+
 }
 
+//print relevant data
 void SJF::print()
 {
 	cout << ".................................................." << endl << endl;
@@ -131,10 +152,26 @@ void SJF::print()
 	shared_ptr<listnode> newNode = queue->get_front();
 	while (newNode != 0)
 	{
-		cout << "\t\t" << newNode->name << "\t\t" << newNode->CPU_burst.back() <<  endl;
+		cout << "\t\t" << newNode->name << "\t\t" << newNode->CPU_burst.back() << endl;
 		newNode = newNode->next;
 	}
 	cout << ".................................................." << endl << endl;
 	cout << "Now in IO:\tProcess\t\tRemaining I/O time\n" << IO;
 	cout << endl;
+}
+
+//increase turnaround time, response time, and waiting time
+void SJF::waiting_time()
+{
+	shared_ptr<listnode> node = queue->get_front();
+	while (node != 0)
+	{
+		node->turnaround_time[node->CPU_burst.size() - 1]++;
+		node->waiting_time[node->CPU_burst.size() - 1]++;
+		if (node->first_response)
+			node->response_time[node->CPU_burst.size() - 1]++;
+		node = node->next;
+	}
+	if (CPUnode != 0)
+		CPUnode->turnaround_time[CPUnode->CPU_burst.size() - 1]++;
 }

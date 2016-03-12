@@ -7,22 +7,23 @@ class SJF
 public:
 	SJF() :CPUnode(0), counter(0), idle(0), utilization(0) { queue = make_shared<list>(); };
 	~SJF() {	};
-	void start();
+	void start();										//controlls the flow of the class
 
 
 private:
-	shared_ptr<list> queue;
-	shared_ptr<listnode>CPUnode;
-	//should be a list instead
-	shared_ptr<list> IO = make_shared<list>();
-	void CPU_SJF();
-	void do_IO();
-	void do_CPU();
-	void init();
-	void print();
-	int counter;
-	int idle;
-	double utilization;
+	shared_ptr<list> queue;								//this is the ready queue
+	shared_ptr<listnode>CPUnode;						//this is the node running on the cpu
+	shared_ptr<list> IO = make_shared<list>();			//this is the io queue
+	shared_ptr<list> finished = make_shared<list>();	//this is the list of finished processes
+	void CPU_SJF();										//shortest time first
+	void do_IO();										//run io list
+	void do_CPU();										//run cpu list
+	void init();										//set up the lists
+	void print();										//print important list data
+	void waiting_time();								//increment turnaround, waiting time, response time
+	int counter;										//keeps time of the program
+	int idle;											//keeps track of cpu idle time
+	double utilization;									//the utilazion of the cpu. counter vs idle
 };
 
 
