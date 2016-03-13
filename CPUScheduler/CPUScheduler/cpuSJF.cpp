@@ -16,13 +16,18 @@ void SJF::start()
 				CPUnode->time_on = 0;
 				IO->insertInorder(CPUnode);
 			}
+			else
+				finished->insert(CPUnode);
 			CPUnode = 0;
 		}
 
 
 	} while (!queue->empty() || !IO->empty() || CPUnode != 0);
 	utilization = ((double)(counter - idle) / counter) * 100;
+	finished->calcAvg();
+	cout << "Total Runtime: " << counter << endl;
 	cout << "CPU Utilization: " << utilization << endl;
+	cout << "Average WT: " << finished->aWT << "\tAverage TT: " << finished->aTT << "\tAverage RT: " << finished->aRT << endl;
 }
 
 //take the node in front of the ready queue if no node on cpu
@@ -71,7 +76,7 @@ void SJF::do_CPU()
 		CPU_SJF();
 	}
 	else {
-		cout << "CPU IDLE";
+		cout << "CPU IDLE ";
 		idle++;
 	}
 	counter++;

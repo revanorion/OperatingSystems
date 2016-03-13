@@ -123,6 +123,26 @@ bool list::empty()
 	return (front == 0) ? true : false;
 }
 
+//calculate the average of the waiting time, response time, and the turnaround time for all the processes
+void list::calcAvg()
+{
+	int sum1, sum2, sum3, items;
+	sum1 = sum2 = sum3 = items = 0;
+	shared_ptr<listnode> node = front;
+	while (node != 0)
+	{
+		node->calcAvg();
+		sum1 += node->aRT;
+		sum2 += node->aWT;
+		sum3 += node->aTT;
+		items++;
+		node = node->next;
+	}
+	aRT = sum1 / items;
+	aWT = sum2 / items;
+	aTT = sum3 / items;
+}
+
 //print list
 ostream & operator<<(ostream & out, shared_ptr<list> & Org)
 {
@@ -137,4 +157,22 @@ ostream & operator<<(ostream & out, shared_ptr<list> & Org)
 			newNode = newNode->next;
 		}
 	return out;
+}
+
+//calculate the average of the waiting time, response time, and the turnaround time for the process
+void listnode::calcAvg()
+{
+	int sum=0;
+	for (int x = 0; x < waiting_time.size(); x++)
+		sum += waiting_time[x];
+	aWT = sum / waiting_time.size();
+	sum = 0;
+	for (int x = 0; x < turnaround_time.size(); x++)
+		sum += turnaround_time[x];
+	aTT = sum / turnaround_time.size();
+	sum = 0;
+	for (int x = 0; x < response_time.size(); x++)
+		sum += response_time[x];
+	aRT = sum / response_time.size();
+	sum = 0;
 }

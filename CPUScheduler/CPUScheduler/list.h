@@ -24,6 +24,8 @@ public:
 	shared_ptr<listnode> prev;		//previous item in the list
 	string name, qu;				//name of the process and the queue process is in
 	bool first_response;			//used to document the response time
+	double aRT, aWT, aTT;			//holds the average values
+	void calcAvg();					//calculate the average of the waiting time, response time, and the turnaround time for the process
 };
 
 class list
@@ -39,7 +41,8 @@ public:
 	shared_ptr<listnode>& get_front() { return front; };
 	bool empty();					//If list is empty
 	friend ostream & operator<<(ostream & out, shared_ptr<list> & Org);
-	 
+	double aRT, aWT, aTT;			//holds the average values
+	void calcAvg();					//calculate the average of the waiting time, response time, and the turnaround time for all the processes
 private:
 	shared_ptr<listnode> front;
 };

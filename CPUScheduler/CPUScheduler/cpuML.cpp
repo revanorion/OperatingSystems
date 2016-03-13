@@ -27,7 +27,10 @@ void ML::start()
 
 	} while (!queue->empty() || !IO->empty() || CPUnode != 0);
 	utilization = ((double)(counter - idle) / counter) * 100;
+	finished->calcAvg();
+	cout << "Total Runtime: " << counter << endl;
 	cout << "CPU Utilization: " << utilization << endl;
+	cout << "Average WT: " << finished->aWT << "\tAverage TT: " << finished->aTT << "\tAverage RT: " << finished->aRT << endl;
 
 }
 
@@ -268,7 +271,7 @@ void ML::do_CPU()
 	}
 	else
 	{
-		cout << "CPU Idle";
+		cout << "CPU Idle ";
 		idle++;
 		waiting_time();
 	}
