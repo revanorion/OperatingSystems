@@ -7,6 +7,7 @@ int main() {
 	ML a;
 	SJF b;
 	FCFS c;
+	cout << "Execution Order: MLFQ -> SJF -> FCFS\n";
 	cout << "To Start the program press space then follow prompts\n";
 	system("pause");
 	cout << endl<<"MLFQ start\n";

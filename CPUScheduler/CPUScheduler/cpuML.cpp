@@ -19,8 +19,10 @@ void ML::start()
 				CPUnode->qu = "";
 				IO->insertBack(CPUnode);
 			}
-			else
+			else {
 				finished->insertInorderName(CPUnode);
+				cout << "Process: " << CPUnode->name << " finished!\n";
+			}
 			CPUnode = 0;
 		}
 
@@ -142,7 +144,7 @@ void ML::CPU_time_quantom_7()
 		CPUnode = queue->remove_front();
 		if (CPUnode->first_response)
 			CPUnode->first_response = false;
-		cout << "Current time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
+		cout << "\nCurrent time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
 		print();
 	}
 	CPUnode->CPU_burst.back()--;
@@ -168,7 +170,7 @@ void ML::CPU_fcfs()
 		if (CPUnode->first_response)
 			CPUnode->first_response = false;
 		queue->remove_front();
-		cout << "Current time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
+		cout << "\nCurrent time: " << counter << "\nCurrently Running: " << CPUnode->name << endl;
 		print();
 	}
 	CPUnode->CPU_burst.back()--;

@@ -210,6 +210,7 @@ void list::calcAvg()
 void list::printTimes()
 {
 	shared_ptr<listnode> node = front;
+	cout << "Process\tWT\tTT\tRT\n";
 	while (node != 0)
 	{
 		cout << node->name << "\t" << node->waiting_time << "\t" << node->turnaround_time << "\t" << node->response_time << endl;

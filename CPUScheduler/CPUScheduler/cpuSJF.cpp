@@ -16,8 +16,10 @@ void SJF::start()
 				CPUnode->time_on = 0;
 				IO->insertBack(CPUnode);
 			}
-			else
+			else {
 				finished->insertInorderName(CPUnode);
+				cout << "Process: " << CPUnode->name << " finished!\n";
+			}
 			CPUnode = 0;
 		}
 

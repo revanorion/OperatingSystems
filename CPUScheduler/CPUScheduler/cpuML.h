@@ -28,8 +28,4 @@ private:
 	int idle;											//keeps track of cpu idle time
 	double utilization;									//the utilazion of the cpu. counter vs idle
 };
-
-
-
-
 #endif
