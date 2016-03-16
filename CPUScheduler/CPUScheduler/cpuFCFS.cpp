@@ -1,7 +1,7 @@
-#include "cpuSJF.h"
+#include "cpuFCFS.h"
 //do the init, while something to do, do the cpu, do the io, place completed nodes in io
 //calculate utilazation
-void SJF::start()
+void FCFS::start()
 {
 	init();
 	do {
@@ -31,7 +31,7 @@ void SJF::start()
 }
 
 //take the node in front of the ready queue if no node on cpu
-void SJF::CPU_SJF()
+void FCFS::CPU_FCFS()
 {
 	if (CPUnode == 0) {
 		CPUnode = queue->get_front();
@@ -46,7 +46,7 @@ void SJF::CPU_SJF()
 }
 
 //decrease time on each node in the io list. insert nodes that complete into ready queue
-void SJF::do_IO()
+void FCFS::do_IO()
 {
 	shared_ptr<listnode> node = IO->get_front();
 	shared_ptr<listnode> nodeNext;
@@ -59,7 +59,7 @@ void SJF::do_IO()
 			nodeNext = node->next;
 			IO->remove_node(node);
 			node->next = 0;
-			queue->insertInorder(node);
+			queue->insertBack(node);
 			if (!node->IO_time.empty())
 				node->IO_time.pop_back();
 			node = nodeNext;
@@ -71,11 +71,11 @@ void SJF::do_IO()
 
 //do the cpu if the queue or cpu node is not empty. add idle time if not
 //calculate times
-void SJF::do_CPU()
+void FCFS::do_CPU()
 {
 	if (!queue->empty() || CPUnode != 0)
 	{
-		CPU_SJF();
+		CPU_FCFS();
 	}
 	else {
 		cout << "CPU IDLE ";
@@ -86,7 +86,7 @@ void SJF::do_CPU()
 }
 
 //make each process and insert them into the queue
-void SJF::init()
+void FCFS::init()
 {
 	shared_ptr<listnode> P1 = make_shared<listnode>(); //{ 18, 41, 16, 52, 19, 31, 14, 33, 17, 43, 19, 66, 14, 39, 17 }
 	shared_ptr<listnode> P2 = make_shared<listnode>(); //{ 8, 32, 7, 42, 6, 27, 17, 41, 7, 33, 11, 43, 12, 32, 14 }
@@ -127,15 +127,15 @@ void SJF::init()
 	P8->name = "P8";
 	P9->name = "P9";
 
-	queue->insertInorder(P1);
-	queue->insertInorder(P2);
-	queue->insertInorder(P3);
-	queue->insertInorder(P4);
-	queue->insertInorder(P5);
-	queue->insertInorder(P6);
-	queue->insertInorder(P7);
-	queue->insertInorder(P8);
-	queue->insertInorder(P9);
+	queue->insertBack(P1);
+	queue->insertBack(P2);
+	queue->insertBack(P3);
+	queue->insertBack(P4);
+	queue->insertBack(P5);
+	queue->insertBack(P6);
+	queue->insertBack(P7);
+	queue->insertBack(P8);
+	queue->insertBack(P9);
 
 	shared_ptr<listnode> node = queue->get_front();
 	while (node != 0)
@@ -152,7 +152,7 @@ void SJF::init()
 }
 
 //print relevant data
-void SJF::print()
+void FCFS::print()
 {
 	cout << ".................................................." << endl << endl;
 	cout << "Ready Queue:\tProcess\t\tBurst" << endl;
@@ -168,7 +168,7 @@ void SJF::print()
 }
 
 //increase turnaround time, response time, and waiting time
-void SJF::waiting_time()
+void FCFS::waiting_time()
 {
 	shared_ptr<listnode> node = queue->get_front();
 	while (node != 0)

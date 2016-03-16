@@ -146,12 +146,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cpuFCFS.cpp" />
     <ClCompile Include="cpuML.cpp" />
     <ClCompile Include="cpuSJF.cpp" />
     <ClCompile Include="list.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cpuFCFS.h" />
     <ClInclude Include="cpuML.h" />
     <ClInclude Include="cpuSJF.h" />
     <ClInclude Include="list.h" />

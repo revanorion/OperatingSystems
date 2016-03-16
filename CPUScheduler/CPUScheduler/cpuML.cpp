@@ -17,10 +17,10 @@ void ML::start()
 			{
 				CPUnode->time_on = 0;
 				CPUnode->qu = "";
-				IO->insert(CPUnode);
+				IO->insertBack(CPUnode);
 			}
 			else
-				finished->insert(CPUnode);
+				finished->insertInorderName(CPUnode);
 			CPUnode = 0;
 		}
 
@@ -91,9 +91,9 @@ void ML::init()
 	{
 		for (int x = 0; x < node->CPU_burst.size(); x++)
 		{
-			node->response_time.push_back(0);
-			node->waiting_time.push_back(0);
-			node->turnaround_time.push_back(0);
+			node->response_time = 0;
+			node->waiting_time = 0;
+			node->turnaround_time=0;
 		}
 		node = node->next;
 	}
@@ -122,14 +122,14 @@ void ML::waiting_time()
 	shared_ptr<listnode> node = queue->get_front();
 	while (node != 0)
 	{
-		node->turnaround_time[node->CPU_burst.size() - 1]++;
-		node->waiting_time[node->CPU_burst.size() - 1]++;
+		node->turnaround_time++;
+		node->waiting_time++;
 		if (node->first_response)
-			node->response_time[node->CPU_burst.size() - 1]++;
+			node->response_time++;
 		node = node->next;
 	}
 	if (CPUnode != 0)
-		CPUnode->turnaround_time[CPUnode->CPU_burst.size() - 1]++;
+		CPUnode->turnaround_time++;
 }
 
 //take the node in front of the ready queue if no node on cpu. prempt any cpu node of lower queue
@@ -223,7 +223,6 @@ void ML::do_IO()
 			nodeNext = node->next;
 			IO->remove_node(node);
 			node->next = 0;
-			node->first_response = true;
 			switch (node->priority)
 			{
 			case 1:

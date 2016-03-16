@@ -27,6 +27,9 @@
     <ClCompile Include="cpuSJF.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cpuFCFS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="list.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cpuSJF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cpuFCFS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
